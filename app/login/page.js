@@ -50,6 +50,9 @@ export default function LoginPage() {
         <button type="submit" className="btn-pesan" disabled={loading}>
           {loading ? 'Memproses...' : 'Login'}
         </button>
+        <a href="/forgot-password" style={{ fontSize: 13, textAlign: 'center', color: 'var(--muted)' }}>
+          Lupa password?
+        </a>
       </form>
     </div>
   );
