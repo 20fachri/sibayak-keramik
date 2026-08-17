@@ -1,0 +1,28 @@
+// GANTI nomor ini dengan nomor WhatsApp toko Sibayak Keramik yang sebenarnya
+const NOMOR_WA_TOKO = '6281234567890';
+
+function formatRupiah(angka) {
+  return 'Rp' + angka.toLocaleString('id-ID');
+}
+
+export default function ProductCard({ product }) {
+  const pesanText = encodeURIComponent(
+    `Halo, saya mau tanya/pesan produk: ${product.nama} (${product.ukuran})`
+  );
+  const waLink = `https://wa.me/${NOMOR_WA_TOKO}?text=${pesanText}`;
+
+  return (
+    <div className="product-card">
+      <div className="thumb" />
+      <div className="nama">{product.nama}</div>
+      <div className="spek">
+        {product.ukuran} · {product.isi_per_dus}
+      </div>
+      <div className="harga">{formatRupiah(product.harga_per_dus)} / dus</div>
+      <div className="stok">Stok: {product.stok} dus</div>
+      <a className="btn-pesan" href={waLink} target="_blank" rel="noopener noreferrer">
+        Pesan via WhatsApp
+      </a>
+    </div>
+  );
+}

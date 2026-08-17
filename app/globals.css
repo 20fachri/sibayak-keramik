@@ -1,0 +1,287 @@
+:root {
+  --bg: #edeeec;
+  --surface: #ffffff;
+  --ink: #1e201f;
+  --muted: #6b6f6c;
+  --accent: #b5502e;
+  --border: #d8d6ce;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  color: var(--ink);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.site-header {
+  padding: 48px 0 32px;
+}
+
+.site-header .wordmark {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.site-header .tagline {
+  color: var(--muted);
+  margin-top: 6px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.scaffold-note {
+  margin: 24px 0 40px;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  padding-bottom: 60px;
+}
+
+.product-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-card .thumb {
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  background:
+    linear-gradient(45deg, var(--border) 25%, transparent 25%) -8px 0/16px 16px,
+    linear-gradient(-45deg, var(--border) 25%, transparent 25%) -8px 0/16px 16px,
+    var(--bg);
+  margin-bottom: 8px;
+}
+
+.product-card .nama {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.product-card .spek {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.product-card .harga {
+  font-weight: 700;
+  font-size: 17px;
+  margin-top: 4px;
+}
+
+.product-card .stok {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.btn-pesan {
+  margin-top: 10px;
+  display: inline-block;
+  text-align: center;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 320px;
+}
+
+.login-form input {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.login-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.login-form select {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.faktur-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: 105mm;
+  min-height: 148mm;
+  margin: 24px auto 0;
+  padding: 6mm;
+  font-size: 10px;
+  box-sizing: border-box;
+}
+
+.faktur-brand {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+}
+
+.faktur-logo {
+  width: 14mm;
+  height: 14mm;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.faktur-brand-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.faktur-brand-tagline {
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.faktur-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 3mm;
+  margin-bottom: 3mm;
+}
+
+.faktur-info {
+  text-align: right;
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.faktur-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9px;
+}
+
+.faktur-table th,
+.faktur-table td {
+  text-align: left;
+  padding: 2mm 1mm;
+  border-bottom: 1px solid var(--border);
+}
+
+.faktur-total {
+  text-align: right;
+  font-weight: 700;
+  font-size: 11px;
+  margin-top: 3mm;
+}
+
+.faktur-signatures {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10mm;
+}
+
+.faktur-signature-block {
+  width: 45%;
+  text-align: center;
+}
+
+.faktur-signature-caption {
+  font-size: 9px;
+  margin-bottom: 14mm;
+}
+
+.faktur-signature-line {
+  border-top: 1px solid var(--ink);
+}
+
+.faktur-signature-label {
+  font-size: 9px;
+  margin-top: 2px;
+  color: var(--muted);
+}
+
+@page {
+  size: A6;
+  margin: 8mm;
+}
+
+@media print {
+  .no-print {
+    display: none;
+  }
+  body {
+    background: #fff;
+  }
+  .faktur-box {
+    width: 100%;
+    min-height: auto;
+    margin: 0;
+    border: none;
+  }
+}
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
