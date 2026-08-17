@@ -1,4 +1,4 @@
-const NOMOR_WA_TOKO = '628358564197';
+const NOMOR_WA_TOKO = '6285358564197';
 
 function formatRupiah(angka) {
   return 'Rp' + angka.toLocaleString('id-ID');
