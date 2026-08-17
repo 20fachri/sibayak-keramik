@@ -1,7 +1,8 @@
 import { supabase } from '@/lib/supabaseClient';
-import ProductCard from '@/components/ProductCard';
+import CatalogClient from '@/components/CatalogClient';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
 
 export default async function HomePage() {
   const { data: products, error } = await supabase
@@ -22,22 +23,14 @@ export default async function HomePage() {
       </header>
 
       {error && (
-        <div className="scaffold-note">
-          Gagal mengambil data produk: {error.message}. Pastikan tabel &apos;produk&apos; sudah dibuat.
-        </div>
+        <div className="scaffold-note">Gagal mengambil data produk: {error.message}.</div>
       )}
 
       {!error && (!products || products.length === 0) && (
-        <div className="scaffold-note">
-          Belum ada produk. Tambahkan lewat Table Editor di Supabase, tabel &apos;produk&apos;.
-        </div>
+        <div className="scaffold-note">Belum ada produk.</div>
       )}
 
-      <div className="product-grid">
-        {(products || []).map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      <CatalogClient products={products || []} />
     </div>
   );
 }

@@ -1,14 +1,18 @@
-const NOMOR_WA_TOKO = '6285358564197';
+'use client';
+
+import { useState } from 'react';
 
 function formatRupiah(angka) {
   return 'Rp' + angka.toLocaleString('id-ID');
 }
 
-export default function ProductCard({ product }) {
-  const pesanText = encodeURIComponent(
-    `Halo, saya mau tanya/pesan produk: ${product.nama} (${product.ukuran})`
-  );
-  const waLink = `https://wa.me/${NOMOR_WA_TOKO}?text=${pesanText}`;
+export default function ProductCard({ product, onAddToCart }) {
+  const [jumlah, setJumlah] = useState(1);
+
+  function handleTambah() {
+    onAddToCart(product, Number(jumlah));
+    setJumlah(1);
+  }
 
   return (
     <div className="product-card">
@@ -23,9 +27,19 @@ export default function ProductCard({ product }) {
       </div>
       <div className="harga">{formatRupiah(product.harga_per_dus)} / dus</div>
       <div className="stok">Stok: {product.stok} dus</div>
-      <a className="btn-pesan" href={waLink} target="_blank" rel="noopener noreferrer">
-        Pesan via WhatsApp
-      </a>
+
+      <div className="qty-row">
+        <input
+          type="number"
+          min="1"
+          max={product.stok}
+          value={jumlah}
+          onChange={(e) => setJumlah(e.target.value)}
+        />
+        <button onClick={handleTambah} className="btn-pesan">
+          Tambah ke Keranjang
+        </button>
+      </div>
     </div>
   );
 }
