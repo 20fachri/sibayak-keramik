@@ -285,3 +285,10 @@ a {
   object-fit: contain;
   flex-shrink: 0;
 }
+.product-card .thumb-foto {
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  width: 100%;
+  object-fit: cover;
+}

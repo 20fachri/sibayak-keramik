@@ -1,5 +1,4 @@
-// GANTI nomor ini dengan nomor WhatsApp toko Sibayak Keramik yang sebenarnya
-const NOMOR_WA_TOKO = '6285358564197';
+const NOMOR_WA_TOKO = '628358564197';
 
 function formatRupiah(angka) {
   return 'Rp' + angka.toLocaleString('id-ID');
@@ -13,7 +12,11 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="product-card">
-      <div className="thumb" />
+      {product.foto_url ? (
+        <img src={product.foto_url} alt={product.nama} className="thumb-foto" />
+      ) : (
+        <div className="thumb" />
+      )}
       <div className="nama">{product.nama}</div>
       <div className="spek">
         {product.ukuran} · {product.isi_per_dus}
