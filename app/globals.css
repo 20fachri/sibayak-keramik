@@ -441,3 +441,12 @@ a {
   font-size: 14px;
   min-width: 220px;
 }
+.hapus-btn {
+  background: none;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
