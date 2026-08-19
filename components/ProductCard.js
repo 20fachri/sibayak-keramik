@@ -17,6 +17,7 @@ export default function ProductCard({ product, onAddToCart }) {
       ) : (
         <div className="thumb" />
       )}
+      {product.kategori && <div className="kategori-badge">{product.kategori}</div>}
       <div className="nama">{product.nama}</div>
       <div className="spek">
         {product.ukuran} · {product.isi_per_dus}
