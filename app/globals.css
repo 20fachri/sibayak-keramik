@@ -425,3 +425,19 @@ a {
   margin-bottom: 6px;
   width: fit-content;
 }
+.site-header {
+  padding: 48px 0 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.header-search {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 220px;
+}

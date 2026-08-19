@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import Cart from './Cart';
 
-export default function CatalogClient({ products }) {
+export default function CatalogClient({ products, errorMessage }) {
   const [cart, setCart] = useState([]);
   const [cari, setCari] = useState('');
   const [kategoriTerpilih, setKategoriTerpilih] = useState('Semua');
@@ -62,19 +62,36 @@ export default function CatalogClient({ products }) {
 
   return (
     <>
-      {cart.length > 0 && (
-        <Cart items={cart} onUpdateJumlah={updateJumlah} onRemove={removeItem} />
-      )}
-
-      <div className="filter-bar">
+      <header className="site-header">
+        <a href="/" className="brand-link">
+          <img src="/logo.png" alt="Logo Sibayak Keramik" className="site-logo" />
+          <div>
+            <div className="wordmark">Sibayak Keramik</div>
+            <div className="tagline">Keramik &amp; Ubin Bahan Bangunan</div>
+          </div>
+        </a>
         <input
           type="text"
           placeholder="Cari produk..."
           value={cari}
           onChange={(e) => setCari(e.target.value)}
-          className="filter-search"
+          className="header-search"
         />
-        {daftarKategori.length > 1 && (
+      </header>
+
+      {errorMessage && (
+        <div className="scaffold-note">Gagal mengambil data produk: {errorMessage}.</div>
+      )}
+      {!errorMessage && products.length === 0 && (
+        <div className="scaffold-note">Belum ada produk.</div>
+      )}
+
+      {cart.length > 0 && (
+        <Cart items={cart} onUpdateJumlah={updateJumlah} onRemove={removeItem} />
+      )}
+
+      {daftarKategori.length > 1 && (
+        <div className="filter-bar">
           <select
             value={kategoriTerpilih}
             onChange={(e) => setKategoriTerpilih(e.target.value)}
@@ -86,8 +103,8 @@ export default function CatalogClient({ products }) {
               </option>
             ))}
           </select>
-        )}
-      </div>
+        </div>
+      )}
 
       {produkTersaring.length === 0 && (
         <div className="scaffold-note">Tidak ada produk yang cocok.</div>
