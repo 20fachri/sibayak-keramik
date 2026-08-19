@@ -102,9 +102,13 @@ export default function FakturPage() {
 
         <div className="faktur-signatures">
           <div className="faktur-signature-block">
-            <div className="faktur-signature-caption">Dibuat oleh,</div>
+            <div className="faktur-signature-caption" style={{ marginBottom: '2mm' }}>
+              Dibuat oleh,
+            </div>
+            {/* Ganti div di bawah ini dengan <img src="/ttd-amri.png" alt="Tanda tangan Amri" className="faktur-stempel-placeholder" /> setelah gambar stempel & tanda tangan sudah ada */}
+            <div className="faktur-stempel-placeholder">Stempel &amp; TTD</div>
             <div className="faktur-signature-line"></div>
-            <div className="faktur-signature-label">Pemilik Sibayak Keramik</div>
+            <div className="faktur-signature-label">Amri</div>
           </div>
           <div className="faktur-signature-block">
             <div className="faktur-signature-caption">Diterima oleh,</div>
