@@ -1,34 +1,51 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
 export default function FakturPage() {
   const params = useParams();
   const kode = params.kode;
+  const router = useRouter();
+  const [session, setSession] = useState(null);
+  const [checking, setChecking] = useState(true);
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingItems, setLoadingItems] = useState(true);
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) {
+        router.push('/login');
+      } else {
+        setSession(data.session);
+      }
+      setChecking(false);
+    });
+  }, [router]);
+
+  useEffect(() => {
+    if (!session) return;
     async function load() {
       const { data } = await supabase
         .from('transaksi')
         .select('*, produk(nama, ukuran)')
         .eq('kode_pesanan', kode);
       setItems(data || []);
-      setLoading(false);
+      setLoadingItems(false);
     }
     load();
-  }, [kode]);
+  }, [session, kode]);
 
-  if (loading) {
+  if (checking || (session && loadingItems)) {
     return (
       <div className="container">
         <p>Memuat...</p>
       </div>
     );
   }
+
+  if (!session) return null;
 
   const total = items.reduce((sum, item) => sum + item.subtotal, 0);
   const namaPembeli = items[0]?.nama_pembeli;
@@ -87,12 +104,12 @@ export default function FakturPage() {
           <div className="faktur-signature-block">
             <div className="faktur-signature-caption">Dibuat oleh,</div>
             <div className="faktur-signature-line"></div>
-            <div className="faktur-signature-label">Amri</div>
+            <div className="faktur-signature-label">Pemilik Sibayak Keramik</div>
           </div>
           <div className="faktur-signature-block">
             <div className="faktur-signature-caption">Diterima oleh,</div>
             <div className="faktur-signature-line"></div>
-            <div className="faktur-signature-label">( Nama )</div>
+            <div className="faktur-signature-label">( Nama Jelas )</div>
           </div>
         </div>
       </div>
