@@ -87,6 +87,19 @@ export default function PembukuanPage() {
 
   return (
     <div className="container">
+      
+        href="/admin"
+        style={{
+          fontSize: 13,
+          color: 'var(--muted)',
+          textDecoration: 'none',
+          display: 'inline-block',
+          marginTop: 24,
+        }}
+      >
+        ← Kembali ke Dashboard
+      </a>
+
       <header className="site-header">
         <div className="wordmark">Pembukuan</div>
         <div className="tagline">Sibayak Keramik</div>
