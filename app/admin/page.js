@@ -41,9 +41,16 @@ export default function AdminPage() {
   return (
     <div className="container">
       <header className="site-header">
-        <div className="wordmark">Dashboard Admin</div>
-        <div className="tagline">Sibayak Keramik</div>
+        <a href="/" className="brand-link">
+          <img src="/logo.png" alt="Logo Sibayak Keramik" className="site-logo" />
+          <div>
+            <div className="wordmark">Sibayak Keramik</div>
+            <div className="tagline">Keramik &amp; Ubin Bahan Bangunan</div>
+          </div>
+        </a>
       </header>
+      <h1 className="page-title">Dashboard Admin</h1>
+
       <p>Login berhasil sebagai {session.user.email}.</p>
       <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
         <button onClick={handleLogout} className="btn-pesan">

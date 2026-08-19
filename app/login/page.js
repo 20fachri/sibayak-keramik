@@ -27,9 +27,15 @@ export default function LoginPage() {
   return (
     <div className="container">
       <header className="site-header">
-        <div className="wordmark">Login Admin</div>
-        <div className="tagline">Sibayak Keramik</div>
+        <a href="/" className="brand-link">
+          <img src="/logo.png" alt="Logo Sibayak Keramik" className="site-logo" />
+          <div>
+            <div className="wordmark">Sibayak Keramik</div>
+            <div className="tagline">Keramik &amp; Ubin Bahan Bangunan</div>
+          </div>
+        </a>
       </header>
+      <h1 className="page-title">Login Admin</h1>
 
       <form onSubmit={handleLogin} className="login-form">
         <input

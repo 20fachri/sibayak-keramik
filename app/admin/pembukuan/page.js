@@ -87,6 +87,16 @@ export default function PembukuanPage() {
 
   return (
     <div className="container">
+      <header className="site-header">
+        <a href="/" className="brand-link">
+          <img src="/logo.png" alt="Logo Sibayak Keramik" className="site-logo" />
+          <div>
+            <div className="wordmark">Sibayak Keramik</div>
+            <div className="tagline">Keramik &amp; Ubin Bahan Bangunan</div>
+          </div>
+        </a>
+      </header>
+
       
         href="/admin"
         style={{
@@ -94,16 +104,13 @@ export default function PembukuanPage() {
           color: 'var(--muted)',
           textDecoration: 'none',
           display: 'inline-block',
-          marginTop: 24,
+          marginBottom: 12,
         }}
       >
         ← Kembali ke Dashboard
       </a>
 
-      <header className="site-header">
-        <div className="wordmark">Pembukuan</div>
-        <div className="tagline">Sibayak Keramik</div>
-      </header>
+      <h1 className="page-title">Pembukuan</h1>
 
       <label style={{ display: 'block', marginBottom: 16 }}>
         Pilih bulan:{' '}
