@@ -2,10 +2,6 @@
 
 import { useState } from 'react';
 
-function formatRupiah(angka) {
-  return 'Rp' + angka.toLocaleString('id-ID');
-}
-
 export default function ProductCard({ product, onAddToCart }) {
   const [jumlah, setJumlah] = useState(1);
 
@@ -25,7 +21,6 @@ export default function ProductCard({ product, onAddToCart }) {
       <div className="spek">
         {product.ukuran} · {product.isi_per_dus}
       </div>
-      <div className="harga">{formatRupiah(product.harga_per_dus)} / dus</div>
       <div className="stok">Stok: {product.stok} dus</div>
 
       <div className="qty-row">
