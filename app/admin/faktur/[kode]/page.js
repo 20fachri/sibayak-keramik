@@ -167,7 +167,7 @@ export default function FakturPage() {
             <div className="faktur-signature-caption" style={{ marginBottom: '2mm' }}>
               Dibuat oleh,
             </div>
-            <div className="faktur-stempel-placeholder">Stempel &amp; TTD</div>
+            <img src="/ttd-amri.png" alt="Tanda tangan Amri" className="faktur-stempel-placeholder" />
             <div className="faktur-signature-line"></div>
             <div className="faktur-signature-label">Amri</div>
           </div>
