@@ -1,13 +1,16 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import Cart from './Cart';
+
+const PER_HALAMAN = 12;
 
 export default function CatalogClient({ products, errorMessage }) {
   const [cart, setCart] = useState([]);
   const [cari, setCari] = useState('');
   const [kategoriTerpilih, setKategoriTerpilih] = useState('Semua');
+  const [halaman, setHalaman] = useState(1);
 
   const daftarKategori = useMemo(() => {
     const unik = [...new Set(products.map((p) => p.kategori).filter(Boolean))];
@@ -24,6 +27,21 @@ export default function CatalogClient({ products, errorMessage }) {
       return cocokCari && cocokKategori;
     });
   }, [products, cari, kategoriTerpilih]);
+
+  useEffect(() => {
+    setHalaman(1);
+  }, [cari, kategoriTerpilih]);
+
+  const totalHalaman = Math.max(1, Math.ceil(produkTersaring.length / PER_HALAMAN));
+  const produkDitampilkan = produkTersaring.slice(
+    (halaman - 1) * PER_HALAMAN,
+    halaman * PER_HALAMAN
+  );
+
+  function gantiHalaman(h) {
+    setHalaman(h);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   function addToCart(product, jumlah) {
     setCart((prev) => {
@@ -111,10 +129,24 @@ export default function CatalogClient({ products, errorMessage }) {
       )}
 
       <div className="product-grid">
-        {produkTersaring.map((product) => (
+        {produkDitampilkan.map((product) => (
           <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
         ))}
       </div>
+
+      {totalHalaman > 1 && (
+        <div className="pagination">
+          <button onClick={() => gantiHalaman(halaman - 1)} disabled={halaman === 1}>
+            ‹ Sebelumnya
+          </button>
+          <span>
+            Halaman {halaman} dari {totalHalaman}
+          </span>
+          <button onClick={() => gantiHalaman(halaman + 1)} disabled={halaman === totalHalaman}>
+            Selanjutnya ›
+          </button>
+        </div>
+      )}
     </>
   );
 }
