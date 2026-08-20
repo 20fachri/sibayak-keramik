@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
+function formatRupiah(angka) {
+  return 'Rp' + angka.toLocaleString('id-ID');
+}
+
 export default function FakturPage() {
   const params = useParams();
   const kode = params.kode;
@@ -11,7 +15,12 @@ export default function FakturPage() {
   const [session, setSession] = useState(null);
   const [checking, setChecking] = useState(true);
   const [items, setItems] = useState([]);
-  const [loadingItems, setLoadingItems] = useState(true);
+  const [pembayaran, setPembayaran] = useState([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [jumlahBayar, setJumlahBayar] = useState('');
+  const [catatanBayar, setCatatanBayar] = useState('');
+  const [pesan, setPesan] = useState('');
+  const [loadingSimpan, setLoadingSimpan] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -25,19 +34,47 @@ export default function FakturPage() {
   }, [router]);
 
   useEffect(() => {
-    if (!session) return;
-    async function load() {
-      const { data } = await supabase
-        .from('transaksi')
-        .select('*, produk(nama, ukuran)')
-        .eq('kode_pesanan', kode);
-      setItems(data || []);
-      setLoadingItems(false);
+    if (session) {
+      loadData();
     }
-    load();
-  }, [session, kode]);
+  }, [session]);
 
-  if (checking || (session && loadingItems)) {
+  async function loadData() {
+    setLoadingData(true);
+    const [resItems, resBayar] = await Promise.all([
+      supabase.from('transaksi').select('*, produk(nama, ukuran)').eq('kode_pesanan', kode),
+      supabase.from('pembayaran').select('*').eq('kode_pesanan', kode).order('tanggal_bayar'),
+    ]);
+    setItems(resItems.data || []);
+    setPembayaran(resBayar.data || []);
+    setLoadingData(false);
+  }
+
+  async function handleCatatPembayaran(e) {
+    e.preventDefault();
+    setPesan('');
+    const jumlah = Number(jumlahBayar);
+    if (!jumlah || jumlah <= 0) {
+      setPesan('Isi jumlah pembayaran yang benar.');
+      return;
+    }
+    setLoadingSimpan(true);
+    const { error } = await supabase.from('pembayaran').insert({
+      kode_pesanan: kode,
+      jumlah_bayar: jumlah,
+      catatan: catatanBayar,
+    });
+    setLoadingSimpan(false);
+    if (error) {
+      setPesan('Gagal menyimpan: ' + error.message);
+      return;
+    }
+    setJumlahBayar('');
+    setCatatanBayar('');
+    loadData();
+  }
+
+  if (checking || (session && loadingData)) {
     return (
       <div className="container">
         <p>Memuat...</p>
@@ -48,6 +85,10 @@ export default function FakturPage() {
   if (!session) return null;
 
   const total = items.reduce((sum, item) => sum + item.subtotal, 0);
+  const totalDibayar = pembayaran.reduce((sum, p) => sum + p.jumlah_bayar, 0);
+  const sisa = total - totalDibayar;
+  const status = sisa <= 0 ? 'Lunas' : totalDibayar > 0 ? 'Dibayar Sebagian' : 'Belum Dibayar';
+
   const namaPembeli = items[0]?.nama_pembeli;
   const tanggal = items[0]?.tanggal
     ? new Date(items[0].tanggal).toLocaleDateString('id-ID', {
@@ -91,21 +132,41 @@ export default function FakturPage() {
                   {item.produk?.nama} ({item.produk?.ukuran})
                 </td>
                 <td>{item.jumlah_dus}</td>
-                <td>Rp{item.harga_saat_itu.toLocaleString('id-ID')}</td>
-                <td>Rp{item.subtotal.toLocaleString('id-ID')}</td>
+                <td>{formatRupiah(item.harga_saat_itu)}</td>
+                <td>{formatRupiah(item.subtotal)}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div className="faktur-total">Total: Rp{total.toLocaleString('id-ID')}</div>
+        <div className="faktur-total">Total: {formatRupiah(total)}</div>
+
+        <div className="faktur-status-bayar">
+          <div>
+            Status: <strong>{status}</strong>
+          </div>
+          <div>Sudah dibayar: {formatRupiah(totalDibayar)}</div>
+          <div>Sisa tagihan: {formatRupiah(Math.max(sisa, 0))}</div>
+        </div>
+
+        {pembayaran.length > 0 && (
+          <div className="faktur-riwayat">
+            <div className="faktur-riwayat-title">Riwayat Pembayaran</div>
+            {pembayaran.map((p) => (
+              <div key={p.id} className="faktur-riwayat-item">
+                <span>{new Date(p.tanggal_bayar).toLocaleDateString('id-ID')}</span>
+                <span>{formatRupiah(p.jumlah_bayar)}</span>
+                {p.catatan && <span className="faktur-riwayat-catatan">{p.catatan}</span>}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="faktur-signatures">
           <div className="faktur-signature-block">
             <div className="faktur-signature-caption" style={{ marginBottom: '2mm' }}>
               Dibuat oleh,
             </div>
-            {/* Ganti div di bawah ini dengan <img src="/ttd-amri.png" alt="Tanda tangan Amri" className="faktur-stempel-placeholder" /> setelah gambar stempel & tanda tangan sudah ada */}
             <div className="faktur-stempel-placeholder">Stempel &amp; TTD</div>
             <div className="faktur-signature-line"></div>
             <div className="faktur-signature-label">Amri</div>
@@ -121,6 +182,32 @@ export default function FakturPage() {
       <button onClick={() => window.print()} className="btn-pesan no-print" style={{ marginTop: 16 }}>
         Cetak / Simpan sebagai PDF
       </button>
+
+      {sisa > 0 && (
+        <div className="no-print catat-bayar-box">
+          <div className="cart-title">Catat Pembayaran Baru</div>
+          <form onSubmit={handleCatatPembayaran} className="login-form">
+            <label>
+              Jumlah bayar
+              <input
+                type="number"
+                min="1"
+                value={jumlahBayar}
+                onChange={(e) => setJumlahBayar(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Catatan (opsional)
+              <input type="text" value={catatanBayar} onChange={(e) => setCatatanBayar(e.target.value)} />
+            </label>
+            {pesan && <div className="scaffold-note">{pesan}</div>}
+            <button type="submit" className="btn-pesan" disabled={loadingSimpan}>
+              {loadingSimpan ? 'Menyimpan...' : 'Simpan Pembayaran'}
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

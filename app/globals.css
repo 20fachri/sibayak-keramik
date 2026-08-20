@@ -468,3 +468,67 @@ a {
   color: var(--muted);
   margin-bottom: 1mm;
 }
+.faktur-status-bayar {
+  margin-top: 3mm;
+  padding-top: 3mm;
+  border-top: 1px dashed var(--border);
+  font-size: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+}
+
+.faktur-riwayat {
+  margin-top: 3mm;
+}
+
+.faktur-riwayat-title {
+  font-size: 9px;
+  font-weight: 700;
+  margin-bottom: 1mm;
+}
+
+.faktur-riwayat-item {
+  display: flex;
+  gap: 6px;
+  font-size: 8px;
+  color: var(--muted);
+  padding: 0.5mm 0;
+}
+
+.faktur-riwayat-catatan {
+  font-style: italic;
+}
+
+.catat-bayar-box {
+  max-width: 400px;
+  margin-top: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-lunas {
+  background: rgba(76, 175, 80, 0.15);
+  color: #2e7d32;
+}
+
+.status-sebagian {
+  background: rgba(255, 152, 0, 0.15);
+  color: #e65100;
+}
+
+.status-belum-bayar {
+  background: rgba(244, 67, 54, 0.15);
+  color: #c62828;
+}

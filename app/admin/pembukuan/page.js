@@ -8,6 +8,7 @@ export default function PembukuanPage() {
   const [session, setSession] = useState(null);
   const [checking, setChecking] = useState(true);
   const [transaksi, setTransaksi] = useState([]);
+  const [pembayaran, setPembayaran] = useState([]);
   const [role, setRole] = useState(null);
   const [bulanTerpilih, setBulanTerpilih] = useState(() => {
     const now = new Date();
@@ -29,6 +30,7 @@ export default function PembukuanPage() {
   useEffect(() => {
     if (session) {
       loadTransaksi();
+      loadPembayaran();
       loadRole();
     }
   }, [session]);
@@ -39,6 +41,11 @@ export default function PembukuanPage() {
       .select('*, produk(nama, ukuran)')
       .order('tanggal', { ascending: false });
     setTransaksi(data || []);
+  }
+
+  async function loadPembayaran() {
+    const { data } = await supabase.from('pembayaran').select('*');
+    setPembayaran(data || []);
   }
 
   async function loadRole() {
@@ -84,6 +91,30 @@ export default function PembukuanPage() {
   const daftarBulan = Object.keys(perBulan).sort().reverse();
   const transaksiBulanIni = perBulan[bulanTerpilih] || [];
   const totalBulanIni = transaksiBulanIni.reduce((sum, t) => sum + t.subtotal, 0);
+
+  const totalTagihanPerKode = {};
+  transaksi.forEach((t) => {
+    totalTagihanPerKode[t.kode_pesanan] = (totalTagihanPerKode[t.kode_pesanan] || 0) + t.subtotal;
+  });
+
+  const totalDibayarPerKode = {};
+  pembayaran.forEach((p) => {
+    totalDibayarPerKode[p.kode_pesanan] = (totalDibayarPerKode[p.kode_pesanan] || 0) + p.jumlah_bayar;
+  });
+
+  function statusBayar(kodePesanan) {
+    const tagihan = totalTagihanPerKode[kodePesanan] || 0;
+    const dibayar = totalDibayarPerKode[kodePesanan] || 0;
+    if (dibayar >= tagihan) return 'Lunas';
+    if (dibayar > 0) return 'Sebagian';
+    return 'Belum Bayar';
+  }
+
+  function kelasStatus(status) {
+    if (status === 'Lunas') return 'status-badge status-lunas';
+    if (status === 'Sebagian') return 'status-badge status-sebagian';
+    return 'status-badge status-belum-bayar';
+  }
 
   return (
     <div className="container">
@@ -144,6 +175,8 @@ export default function PembukuanPage() {
             <th>Jumlah</th>
             <th>Pembeli</th>
             <th>Subtotal</th>
+            <th>Status Bayar</th>
+            <th>Bon</th>
             {role === 'super_admin' && <th>Aksi</th>}
           </tr>
         </thead>
@@ -155,6 +188,16 @@ export default function PembukuanPage() {
               <td>{t.jumlah_dus} dus</td>
               <td>{t.nama_pembeli || '-'}</td>
               <td>Rp{t.subtotal.toLocaleString('id-ID')}</td>
+              <td>
+                <span className={kelasStatus(statusBayar(t.kode_pesanan))}>
+                  {statusBayar(t.kode_pesanan)}
+                </span>
+              </td>
+              <td>
+                <a href={`/admin/faktur/${t.kode_pesanan}`} target="_blank" className="hapus-btn">
+                  Lihat
+                </a>
+              </td>
               {role === 'super_admin' && (
                 <td>
                   <button onClick={() => handleHapus(t.id)} className="hapus-btn">
