@@ -160,3 +160,31 @@ export default function PesananForm() {
               <div className="cart-item-subtotal">
                 Rp{(item.harga_per_dus * item.jumlah).toLocaleString('id-ID')}
               </div>
+                    </div>
+    )}
+
+      <form onSubmit={handleSubmit} className="login-form">
+        <label>
+          Nama pembeli (opsional)
+          <input type="text" value={namaPembeli} onChange={(e) => setNamaPembeli(e.target.value)} />
+        </label>
+
+        {pesan && <div className="scaffold-note">{pesan}</div>}
+        {lastKode && (
+          
+            href={'/admin/faktur/' + lastKode}
+            target="_blank"
+            className="btn-pesan"
+            style={{ textAlign: 'center' }}
+          >
+            Lihat &amp; Cetak Bon
+          </a>
+        )}
+
+        <button type="submit" className="btn-pesan" disabled={loading || daftarPesanan.length === 0}>
+          {loading ? 'Menyimpan...' : 'Simpan Pesanan'}
+        </button>
+      </form>
+    </div>
+  );
+}
