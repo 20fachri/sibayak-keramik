@@ -160,8 +160,18 @@ export default function PesananForm() {
               <div className="cart-item-subtotal">
                 Rp{(item.harga_per_dus * item.jumlah).toLocaleString('id-ID')}
               </div>
-                    </div>
-    )}
+              <button
+                type="button"
+                onClick={() => hapusDariDaftar(item.produk_id)}
+                className="cart-item-remove"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <div className="cart-total">Total: Rp{totalKeseluruhan.toLocaleString('id-ID')}</div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="login-form">
         <label>
@@ -171,7 +181,7 @@ export default function PesananForm() {
 
         {pesan && <div className="scaffold-note">{pesan}</div>}
         {lastKode && (
-          
+          <a
             href={'/admin/faktur/' + lastKode}
             target="_blank"
             className="btn-pesan"
