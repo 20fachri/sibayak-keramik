@@ -38,7 +38,7 @@ export default function PesananForm() {
 
     const sisa = sisaStok(produk);
     if (Number(jumlah) > sisa) {
-      setPesan('Stok tidak cukup. Sisa stok: ' + sisa + ' dus.');
+      setPesan("Stok tidak cukup. Sisa stok: " + sisa + " dus.");
       return;
     }
 
@@ -160,41 +160,3 @@ export default function PesananForm() {
               <div className="cart-item-subtotal">
                 Rp{(item.harga_per_dus * item.jumlah).toLocaleString('id-ID')}
               </div>
-              <button
-                type="button"
-                onClick={() => hapusDariDaftar(item.produk_id)}
-                className="cart-item-remove"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-          <div className="cart-total">Total: Rp{totalKeseluruhan.toLocaleString('id-ID')}</div>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="login-form">
-        <label>
-          Nama pembeli (opsional)
-          <input type="text" value={namaPembeli} onChange={(e) => setNamaPembeli(e.target.value)} />
-        </label>
-
-        {pesan && <div className="scaffold-note">{pesan}</div>}
-        {lastKode && (
-          
-            href={'/admin/faktur/' + lastKode}
-            target="_blank"
-            className="btn-pesan"
-            style={{ textAlign: 'center' }}
-          >
-            Lihat &amp; Cetak Bon
-          </a>
-        )}
-
-        <button type="submit" className="btn-pesan" disabled={loading || daftarPesanan.length === 0}>
-          {loading ? 'Menyimpan...' : 'Simpan Pesanan'}
-        </button>
-      </form>
-    </div>
-  );
-}
