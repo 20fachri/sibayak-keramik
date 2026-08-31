@@ -38,7 +38,7 @@ export default function PesananForm() {
 
     const sisa = sisaStok(produk);
     if (Number(jumlah) > sisa) {
-      setPesan(`Stok tidak cukup. Sisa stok: ${sisa} dus.`);
+      setPesan('Stok tidak cukup. Sisa stok: ' + sisa + ' dus.');
       return;
     }
 
@@ -182,7 +182,7 @@ export default function PesananForm() {
         {pesan && <div className="scaffold-note">{pesan}</div>}
         {lastKode && (
           
-            href={`/admin/faktur/${lastKode}`}
+            href={'/admin/faktur/' + lastKode}
             target="_blank"
             className="btn-pesan"
             style={{ textAlign: 'center' }}
