@@ -21,6 +21,9 @@ export default function FakturPage() {
   const [catatanBayar, setCatatanBayar] = useState('');
   const [pesan, setPesan] = useState('');
   const [loadingSimpan, setLoadingSimpan] = useState(false);
+  const [tanggalInput, setTanggalInput] = useState('');
+  const [pesanTanggal, setPesanTanggal] = useState('');
+  const [loadingTanggal, setLoadingTanggal] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -38,6 +41,16 @@ export default function FakturPage() {
       loadData();
     }
   }, [session]);
+
+  useEffect(() => {
+    if (items.length > 0 && items[0].tanggal) {
+      const d = new Date(items[0].tanggal);
+      const tahun = d.getFullYear();
+      const bulan = String(d.getMonth() + 1).padStart(2, '0');
+      const hari = String(d.getDate()).padStart(2, '0');
+      setTanggalInput(tahun + '-' + bulan + '-' + hari);
+    }
+  }, [items]);
 
   async function loadData() {
     setLoadingData(true);
@@ -71,6 +84,27 @@ export default function FakturPage() {
     }
     setJumlahBayar('');
     setCatatanBayar('');
+    loadData();
+  }
+
+  async function handleUbahTanggal(e) {
+    e.preventDefault();
+    setPesanTanggal('');
+    if (!tanggalInput) {
+      setPesanTanggal('Pilih tanggal dulu.');
+      return;
+    }
+    setLoadingTanggal(true);
+    const { error } = await supabase
+      .from('transaksi')
+      .update({ tanggal: tanggalInput })
+      .eq('kode_pesanan', kode);
+    setLoadingTanggal(false);
+    if (error) {
+      setPesanTanggal('Gagal mengubah tanggal: ' + error.message);
+      return;
+    }
+    setPesanTanggal('Tanggal berhasil diubah.');
     loadData();
   }
 
@@ -182,6 +216,25 @@ export default function FakturPage() {
       <button onClick={() => window.print()} className="btn-pesan no-print" style={{ marginTop: 16 }}>
         Cetak / Simpan sebagai PDF
       </button>
+
+      <div className="no-print catat-bayar-box">
+        <div className="cart-title">Ubah Tanggal Faktur</div>
+        <form onSubmit={handleUbahTanggal} className="login-form">
+          <label>
+            Tanggal
+            <input
+              type="date"
+              value={tanggalInput}
+              onChange={(e) => setTanggalInput(e.target.value)}
+              required
+            />
+          </label>
+          {pesanTanggal && <div className="scaffold-note">{pesanTanggal}</div>}
+          <button type="submit" className="btn-pesan" disabled={loadingTanggal}>
+            {loadingTanggal ? 'Menyimpan...' : 'Simpan Tanggal'}
+          </button>
+        </form>
+      </div>
 
       {sisa > 0 && (
         <div className="no-print catat-bayar-box">
