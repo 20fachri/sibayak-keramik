@@ -59,7 +59,7 @@ export default function PembukuanPage() {
 
   async function handleHapus(id) {
     const yakin = window.confirm(
-      'Yakin mau hapus transaksi ini? Aksi ini tidak bisa dibatalkan, dan stok TIDAK otomatis dikembalikan.'
+      'Yakin mau hapus baris ini? Aksi ini tidak bisa dibatalkan, dan stok TIDAK otomatis dikembalikan.'
     );
     if (!yakin) return;
     const { error } = await supabase.from('transaksi').delete().eq('id', id);
@@ -116,6 +116,16 @@ export default function PembukuanPage() {
     return 'status-badge status-belum-bayar';
   }
 
+  const kelompokPesanan = {};
+  const urutanKode = [];
+  transaksiBulanIni.forEach((t) => {
+    if (!kelompokPesanan[t.kode_pesanan]) {
+      kelompokPesanan[t.kode_pesanan] = [];
+      urutanKode.push(t.kode_pesanan);
+    }
+    kelompokPesanan[t.kode_pesanan].push(t);
+  });
+
   return (
     <div className="container">
       <header className="site-header">
@@ -167,48 +177,55 @@ export default function PembukuanPage() {
         {transaksiBulanIni.length} transaksi
       </div>
 
-      <table className="faktur-table" style={{ marginTop: 16, fontSize: 13 }}>
-        <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>Produk</th>
-            <th>Jumlah</th>
-            <th>Pembeli</th>
-            <th>Subtotal</th>
-            <th>Status Bayar</th>
-            <th>Bon</th>
-            {role === 'super_admin' && <th>Aksi</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {transaksiBulanIni.map((t) => (
-            <tr key={t.id}>
-              <td>{new Date(t.tanggal).toLocaleDateString('id-ID')}</td>
-              <td>{t.produk?.nama}</td>
-              <td>{t.jumlah_dus} dus</td>
-              <td>{t.nama_pembeli || '-'}</td>
-              <td>Rp{t.subtotal.toLocaleString('id-ID')}</td>
-              <td>
-                <span className={kelasStatus(statusBayar(t.kode_pesanan))}>
-                  {statusBayar(t.kode_pesanan)}
-                </span>
-              </td>
-              <td>
-                <a href={`/admin/faktur/${t.kode_pesanan}`} target="_blank" className="hapus-btn">
-                  Lihat
-                </a>
-              </td>
-              {role === 'super_admin' && (
-                <td>
-                  <button onClick={() => handleHapus(t.id)} className="hapus-btn">
-                    Hapus
-                  </button>
-                </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div style={{ marginTop: 20 }}>
+        {urutanKode.map((kodePesanan) => {
+          const itemsGroup = kelompokPesanan[kodePesanan];
+          const totalGroup = itemsGroup.reduce((sum, t) => sum + t.subtotal, 0);
+          const status = statusBayar(kodePesanan);
+          const namaPembeli = itemsGroup[0].nama_pembeli || '-';
+          const tanggalGroup = new Date(itemsGroup[0].tanggal).toLocaleDateString('id-ID');
+
+          return (
+            <div className="pesanan-group" key={kodePesanan}>
+              <div className="pesanan-group-header">
+                <div>
+                  <strong>{namaPembeli}</strong>
+                  <span className="pesanan-group-tanggal"> · {tanggalGroup}</span>
+                </div>
+                <div className="pesanan-group-aksi">
+                  <span className={kelasStatus(status)}>{status}</span>
+                  <a href={'/admin/faktur/' + kodePesanan} target="_blank" className="hapus-btn">
+                    Lihat Bon
+                  </a>
+                </div>
+              </div>
+
+              <table className="faktur-table" style={{ fontSize: 13 }}>
+                <tbody>
+                  {itemsGroup.map((t) => (
+                    <tr key={t.id}>
+                      <td>{t.produk?.nama}</td>
+                      <td>{t.jumlah_dus} dus</td>
+                      <td>Rp{t.subtotal.toLocaleString('id-ID')}</td>
+                      {role === 'super_admin' && (
+                        <td style={{ textAlign: 'right' }}>
+                          <button onClick={() => handleHapus(t.id)} className="hapus-btn">
+                            Hapus
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="pesanan-group-total">
+                Total pesanan: Rp{totalGroup.toLocaleString('id-ID')}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
