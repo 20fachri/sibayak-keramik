@@ -43,12 +43,16 @@ export default function CatalogClient({ products, errorMessage }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function addToCart(product, jumlah) {
+  function addToCart(product, jumlah, warna) {
     setCart((prev) => {
-      const existing = prev.find((item) => item.produk_id === product.id);
+      const existing = prev.find(
+        (item) => item.produk_id === product.id && item.warna === warna
+      );
       if (existing) {
         return prev.map((item) =>
-          item.produk_id === product.id ? { ...item, jumlah: item.jumlah + jumlah } : item
+          item.produk_id === product.id && item.warna === warna
+            ? { ...item, jumlah: item.jumlah + jumlah }
+            : item
         );
       }
       return [
@@ -58,24 +62,31 @@ export default function CatalogClient({ products, errorMessage }) {
           nama: product.nama,
           ukuran: product.ukuran,
           harga_per_dus: product.harga_per_dus,
+          warna: warna || '',
           jumlah,
         },
       ];
     });
   }
 
-  function updateJumlah(produk_id, jumlah) {
+  function updateJumlah(produk_id, warna, jumlah) {
     if (jumlah <= 0) {
-      setCart((prev) => prev.filter((item) => item.produk_id !== produk_id));
+      setCart((prev) =>
+        prev.filter((item) => !(item.produk_id === produk_id && item.warna === warna))
+      );
       return;
     }
     setCart((prev) =>
-      prev.map((item) => (item.produk_id === produk_id ? { ...item, jumlah } : item))
+      prev.map((item) =>
+        item.produk_id === produk_id && item.warna === warna ? { ...item, jumlah } : item
+      )
     );
   }
 
-  function removeItem(produk_id) {
-    setCart((prev) => prev.filter((item) => item.produk_id !== produk_id));
+  function removeItem(produk_id, warna) {
+    setCart((prev) =>
+      prev.filter((item) => !(item.produk_id === produk_id && item.warna === warna))
+    );
   }
 
   return (

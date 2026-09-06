@@ -204,7 +204,10 @@ export default function PembukuanPage() {
                 <tbody>
                   {itemsGroup.map((t) => (
                     <tr key={t.id}>
-                      <td>{t.produk?.nama}</td>
+                      <td>
+                        {t.produk?.nama}
+                        {t.warna ? ' - ' + t.warna : ''}
+                      </td>
                       <td>{t.jumlah_dus} dus</td>
                       <td>Rp{t.subtotal.toLocaleString('id-ID')}</td>
                       {role === 'super_admin' && (

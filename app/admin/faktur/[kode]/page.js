@@ -164,6 +164,7 @@ export default function FakturPage() {
               <tr key={item.id}>
                 <td>
                   {item.produk?.nama} ({item.produk?.ukuran})
+                  {item.warna ? ' - ' + item.warna : ''}
                 </td>
                 <td>{item.jumlah_dus}</td>
                 <td>{formatRupiah(item.harga_saat_itu)}</td>

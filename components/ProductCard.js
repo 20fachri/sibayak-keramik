@@ -4,9 +4,16 @@ import { useState } from 'react';
 
 export default function ProductCard({ product, onAddToCart }) {
   const [jumlah, setJumlah] = useState(1);
+  const daftarWarna = product.warna
+    ? product.warna.split(',').map((w) => w.trim()).filter(Boolean)
+    : [];
+  const [warna, setWarna] = useState(daftarWarna[0] || '');
 
   function handleTambah() {
-    onAddToCart(product, Number(jumlah));
+    if (daftarWarna.length > 0 && !warna) {
+      return;
+    }
+    onAddToCart(product, Number(jumlah), warna);
     setJumlah(1);
   }
 
@@ -23,6 +30,16 @@ export default function ProductCard({ product, onAddToCart }) {
         {product.ukuran} · {product.isi_per_dus}
       </div>
       <div className="stok">Stok: {product.stok} dus</div>
+
+      {daftarWarna.length > 0 && (
+        <select value={warna} onChange={(e) => setWarna(e.target.value)} className="warna-select">
+          {daftarWarna.map((w) => (
+            <option key={w} value={w}>
+              {w}
+            </option>
+          ))}
+        </select>
+      )}
 
       <div className="qty-row">
         <input
