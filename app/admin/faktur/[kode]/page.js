@@ -25,8 +25,6 @@ export default function FakturPage() {
   const [pesanTanggal, setPesanTanggal] = useState('');
   const [loadingTanggal, setLoadingTanggal] = useState(false);
   const [tempoInput, setTempoInput] = useState('');
-  const [pesanTempo, setPesanTempo] = useState('');
-  const [loadingTempo, setLoadingTempo] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -100,41 +98,20 @@ export default function FakturPage() {
     e.preventDefault();
     setPesanTanggal('');
     if (!tanggalInput) {
-      setPesanTanggal('Pilih tanggal dulu.');
+      setPesanTanggal('Pilih tanggal faktur dulu.');
       return;
     }
     setLoadingTanggal(true);
     const { error } = await supabase
       .from('transaksi')
-      .update({ tanggal: tanggalInput })
+      .update({ tanggal: tanggalInput, jatuh_tempo: tempoInput || null })
       .eq('kode_pesanan', kode);
     setLoadingTanggal(false);
     if (error) {
       setPesanTanggal('Gagal mengubah tanggal: ' + error.message);
       return;
     }
-    setPesanTanggal('Tanggal berhasil diubah.');
-    loadData();
-  }
-
-  async function handleUbahTempo(e) {
-    e.preventDefault();
-    setPesanTempo('');
-    if (!tempoInput) {
-      setPesanTempo('Pilih tanggal jatuh tempo dulu.');
-      return;
-    }
-    setLoadingTempo(true);
-    const { error } = await supabase
-      .from('transaksi')
-      .update({ jatuh_tempo: tempoInput })
-      .eq('kode_pesanan', kode);
-    setLoadingTempo(false);
-    if (error) {
-      setPesanTempo('Gagal menyimpan: ' + error.message);
-      return;
-    }
-    setPesanTempo('Tanggal jatuh tempo berhasil disimpan.');
+    setPesanTanggal('Tanggal berhasil disimpan.');
     loadData();
   }
 
@@ -271,7 +248,7 @@ export default function FakturPage() {
         <div className="cart-title">Ubah Tanggal Faktur</div>
         <form onSubmit={handleUbahTanggal} className="login-form">
           <label>
-            Tanggal
+            Tanggal Faktur
             <input
               type="date"
               value={tanggalInput}
@@ -279,28 +256,17 @@ export default function FakturPage() {
               required
             />
           </label>
-          {pesanTanggal && <div className="scaffold-note">{pesanTanggal}</div>}
-          <button type="submit" className="btn-pesan" disabled={loadingTanggal}>
-            {loadingTanggal ? 'Menyimpan...' : 'Simpan Tanggal'}
-          </button>
-        </form>
-      </div>
-
-      <div className="no-print catat-bayar-box">
-        <div className="cart-title">Atur Tanggal Jatuh Tempo</div>
-        <form onSubmit={handleUbahTempo} className="login-form">
           <label>
-            Jatuh Tempo
+            Tanggal Jatuh Tempo (opsional)
             <input
               type="date"
               value={tempoInput}
               onChange={(e) => setTempoInput(e.target.value)}
-              required
             />
           </label>
-          {pesanTempo && <div className="scaffold-note">{pesanTempo}</div>}
-          <button type="submit" className="btn-pesan" disabled={loadingTempo}>
-            {loadingTempo ? 'Menyimpan...' : 'Simpan Jatuh Tempo'}
+          {pesanTanggal && <div className="scaffold-note">{pesanTanggal}</div>}
+          <button type="submit" className="btn-pesan" disabled={loadingTanggal}>
+            {loadingTanggal ? 'Menyimpan...' : 'Simpan'}
           </button>
         </form>
       </div>
