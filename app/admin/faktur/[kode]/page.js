@@ -24,6 +24,9 @@ export default function FakturPage() {
   const [tanggalInput, setTanggalInput] = useState('');
   const [pesanTanggal, setPesanTanggal] = useState('');
   const [loadingTanggal, setLoadingTanggal] = useState(false);
+  const [tempoInput, setTempoInput] = useState('');
+  const [pesanTempo, setPesanTempo] = useState('');
+  const [loadingTempo, setLoadingTempo] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -49,6 +52,12 @@ export default function FakturPage() {
       const bulan = String(d.getMonth() + 1).padStart(2, '0');
       const hari = String(d.getDate()).padStart(2, '0');
       setTanggalInput(tahun + '-' + bulan + '-' + hari);
+    }
+  }, [items]);
+
+  useEffect(() => {
+    if (items.length > 0 && items[0].jatuh_tempo) {
+      setTempoInput(items[0].jatuh_tempo);
     }
   }, [items]);
 
@@ -108,6 +117,27 @@ export default function FakturPage() {
     loadData();
   }
 
+  async function handleUbahTempo(e) {
+    e.preventDefault();
+    setPesanTempo('');
+    if (!tempoInput) {
+      setPesanTempo('Pilih tanggal jatuh tempo dulu.');
+      return;
+    }
+    setLoadingTempo(true);
+    const { error } = await supabase
+      .from('transaksi')
+      .update({ jatuh_tempo: tempoInput })
+      .eq('kode_pesanan', kode);
+    setLoadingTempo(false);
+    if (error) {
+      setPesanTempo('Gagal menyimpan: ' + error.message);
+      return;
+    }
+    setPesanTempo('Tanggal jatuh tempo berhasil disimpan.');
+    loadData();
+  }
+
   if (checking || (session && loadingData)) {
     return (
       <div className="container">
@@ -132,6 +162,19 @@ export default function FakturPage() {
       })
     : '';
 
+  const jatuhTempo = items[0]?.jatuh_tempo
+    ? new Date(items[0].jatuh_tempo).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : '';
+
+  const sudahLewatTempo =
+    items[0]?.jatuh_tempo &&
+    status !== 'Lunas' &&
+    new Date(items[0].jatuh_tempo) < new Date(new Date().toDateString());
+
   return (
     <div className="container">
       <div className="faktur-box">
@@ -146,6 +189,7 @@ export default function FakturPage() {
           <div className="faktur-info">
             <div>No: {kode}</div>
             <div>Tanggal: {tanggal}</div>
+            {jatuhTempo && <div>Jatuh Tempo: {jatuhTempo}</div>}
             {namaPembeli && <div>Pembeli: {namaPembeli}</div>}
           </div>
         </div>
@@ -182,6 +226,11 @@ export default function FakturPage() {
           </div>
           <div>Sudah dibayar: {formatRupiah(totalDibayar)}</div>
           <div>Sisa tagihan: {formatRupiah(Math.max(sisa, 0))}</div>
+          {sudahLewatTempo && (
+            <div style={{ color: '#c62828', fontWeight: 700 }}>
+              Sudah lewat jatuh tempo
+            </div>
+          )}
         </div>
 
         {pembayaran.length > 0 && (
@@ -233,6 +282,25 @@ export default function FakturPage() {
           {pesanTanggal && <div className="scaffold-note">{pesanTanggal}</div>}
           <button type="submit" className="btn-pesan" disabled={loadingTanggal}>
             {loadingTanggal ? 'Menyimpan...' : 'Simpan Tanggal'}
+          </button>
+        </form>
+      </div>
+
+      <div className="no-print catat-bayar-box">
+        <div className="cart-title">Atur Tanggal Jatuh Tempo</div>
+        <form onSubmit={handleUbahTempo} className="login-form">
+          <label>
+            Jatuh Tempo
+            <input
+              type="date"
+              value={tempoInput}
+              onChange={(e) => setTempoInput(e.target.value)}
+              required
+            />
+          </label>
+          {pesanTempo && <div className="scaffold-note">{pesanTempo}</div>}
+          <button type="submit" className="btn-pesan" disabled={loadingTempo}>
+            {loadingTempo ? 'Menyimpan...' : 'Simpan Jatuh Tempo'}
           </button>
         </form>
       </div>
