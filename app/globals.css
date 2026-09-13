@@ -594,3 +594,31 @@ a {
   border-radius: 8px;
   padding: 16px;
 }
+.admin-nav {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 24px;
+  flex-wrap: wrap;
+}
+
+.admin-nav-link {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-nav-link:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.admin-nav-link.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
