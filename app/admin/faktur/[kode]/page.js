@@ -224,17 +224,21 @@ export default function FakturPage() {
 
         <div className="faktur-signatures">
           <div className="faktur-signature-block">
-            <div className="faktur-signature-caption" style={{ marginBottom: '2mm' }}>
-              Dibuat oleh,
+            <div className="faktur-signature-top">
+              <div className="faktur-signature-caption">Dibuat oleh,</div>
+              <img src="/ttd-amri.png" alt="Tanda tangan Amri" className="faktur-stempel-placeholder" />
             </div>
-            <img src="/ttd-amri.png" alt="Tanda tangan Amri" className="faktur-stempel-placeholder" />
             <div className="faktur-signature-line"></div>
             <div className="faktur-signature-label">Amri</div>
           </div>
           <div className="faktur-signature-block">
-            <div className="faktur-signature-caption">Diterima oleh,</div>
+            <div className="faktur-signature-top">
+              <div className="faktur-signature-caption">Diterima oleh,</div>
+            </div>
             <div className="faktur-signature-line"></div>
-            <div className="faktur-signature-label">( Nama Jelas )</div>
+            <div className="faktur-signature-label">
+              {namaPembeli ? namaPembeli : '( Nama Jelas )'}
+            </div>
           </div>
         </div>
 
