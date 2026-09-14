@@ -22,11 +22,6 @@ export default function AdminPage() {
     });
   }, [router]);
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    router.push('/login');
-  }
-
   if (checking) {
     return (
       <div className="container">
@@ -56,9 +51,6 @@ export default function AdminPage() {
       <h1 className="page-title">Dashboard Admin</h1>
 
       <p>Login berhasil sebagai {session.user.email}.</p>
-      <button onClick={handleLogout} className="btn-pesan" style={{ marginTop: 16 }}>
-        Logout
-      </button>
 
       <h2 style={{ marginTop: 32, fontSize: 18 }}>Input Pesanan Baru</h2>
       <PesananForm />

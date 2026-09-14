@@ -683,3 +683,29 @@ a {
 .faktur-stempel-placeholder {
   flex: 1;
 }
+.admin-nav {
+  justify-content: space-between;
+}
+
+.admin-nav-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-nav-logout {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.admin-nav-logout:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
