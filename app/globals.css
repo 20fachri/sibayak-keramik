@@ -650,3 +650,25 @@ a {
   color: var(--muted);
   text-align: center;
 }
+.faktur-signature-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.faktur-signature-top {
+  height: 16mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.faktur-signature-caption {
+  margin-bottom: 0;
+}
+
+.faktur-stempel-placeholder {
+  height: auto;
+  max-height: 12mm;
+  margin-bottom: 0;
+}
