@@ -672,3 +672,14 @@ a {
   max-height: 12mm;
   margin-bottom: 0;
 }
+.faktur-signature-top {
+  justify-content: flex-start;
+}
+
+.faktur-signature-caption {
+  margin-bottom: 1mm;
+}
+
+.faktur-stempel-placeholder {
+  flex: 1;
+}
