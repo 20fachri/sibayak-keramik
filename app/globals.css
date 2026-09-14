@@ -622,3 +622,31 @@ a {
   border-color: var(--accent);
   color: #fff;
 }
+.watermark-lunas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: 64px;
+  font-weight: 900;
+  color: rgba(46, 125, 50, 0.15);
+  letter-spacing: 8px;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: -1;
+}
+
+.faktur-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6mm;
+  gap: 1mm;
+}
+
+.faktur-qr-text {
+  font-size: 8px;
+  color: var(--muted);
+  text-align: center;
+}

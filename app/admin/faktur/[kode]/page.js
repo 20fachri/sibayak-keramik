@@ -22,9 +22,9 @@ export default function FakturPage() {
   const [pesan, setPesan] = useState('');
   const [loadingSimpan, setLoadingSimpan] = useState(false);
   const [tanggalInput, setTanggalInput] = useState('');
+  const [tempoInput, setTempoInput] = useState('');
   const [pesanTanggal, setPesanTanggal] = useState('');
   const [loadingTanggal, setLoadingTanggal] = useState(false);
-  const [tempoInput, setTempoInput] = useState('');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -154,7 +154,8 @@ export default function FakturPage() {
 
   return (
     <div className="container">
-      <div className="faktur-box">
+      <div className="faktur-box" style={{ position: 'relative' }}>
+        {status === 'Lunas' && <div className="watermark-lunas">LUNAS</div>}
         <div className="faktur-header">
           <div className="faktur-brand">
             <img src="/logo.png" alt="Logo Sibayak Keramik" className="faktur-logo" />
@@ -204,9 +205,7 @@ export default function FakturPage() {
           <div>Sudah dibayar: {formatRupiah(totalDibayar)}</div>
           <div>Sisa tagihan: {formatRupiah(Math.max(sisa, 0))}</div>
           {sudahLewatTempo && (
-            <div style={{ color: '#c62828', fontWeight: 700 }}>
-              Sudah lewat jatuh tempo
-            </div>
+            <div style={{ color: '#c62828', fontWeight: 700 }}>Sudah lewat jatuh tempo</div>
           )}
         </div>
 
@@ -238,6 +237,19 @@ export default function FakturPage() {
             <div className="faktur-signature-label">( Nama Jelas )</div>
           </div>
         </div>
+
+        <div className="faktur-qr">
+          <img
+            src={
+              'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' +
+              encodeURIComponent('https://sibayak-keramik.vercel.app')
+            }
+            alt="QR Kunjungi Katalog"
+            width="90"
+            height="90"
+          />
+          <div className="faktur-qr-text">Kunjungi Katalog Kami</div>
+        </div>
       </div>
 
       <button onClick={() => window.print()} className="btn-pesan no-print" style={{ marginTop: 16 }}>
@@ -258,11 +270,7 @@ export default function FakturPage() {
           </label>
           <label>
             Tanggal Jatuh Tempo (opsional)
-            <input
-              type="date"
-              value={tempoInput}
-              onChange={(e) => setTempoInput(e.target.value)}
-            />
+            <input type="date" value={tempoInput} onChange={(e) => setTempoInput(e.target.value)} />
           </label>
           {pesanTanggal && <div className="scaffold-note">{pesanTanggal}</div>}
           <button type="submit" className="btn-pesan" disabled={loadingTanggal}>
